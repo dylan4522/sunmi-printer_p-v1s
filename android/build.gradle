@@ -26,9 +26,14 @@ android {
 
     defaultConfig {
         minSdkVersion 16
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
         disable 'InvalidPackage'
     }
+}
+dependencies {
+    implementation 'com.sunmi:sunmiui:latest.release'
+    implementation 'com.google.zxing:core:3.3.0'
+    implementation 'androidx.annotation:annotation:1.0.0'
 }

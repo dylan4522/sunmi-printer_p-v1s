@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:sunmi/sunmi.dart';
+import 'package:path_provider/path_provider.dart';
 
-void main() => runApp(MyApp());
+//void main()=>runApp(MyApp());
+
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -12,45 +18,85 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  String printStatus = '';
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    initSaveToPath();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      platformVersion = await Sunmi.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
+  String imagePath;
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
+  void initSaveToPath() async {
+    final filename = 'lihkg_pig_drink.png';
+    var bytes = await rootBundle.load("assets/image/lihkg_pig_drink.png");
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    writeToFile(bytes, '$dir/$filename');
 
     setState(() {
-      _platformVersion = platformVersion;
+      imagePath = '$dir/$filename';
     });
   }
 
+  //write to app path
+  Future<void> writeToFile(ByteData data, String path) {
+    final buffer = data.buffer;
+    return new File(path).writeAsBytes(
+        buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+  }
+
+  static const platform = const MethodChannel('sunmi');
+
   @override
   Widget build(BuildContext context) {
+    setState(() {
+      printStatus = Sunmi.printStatus;
+    });
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
-      ),
+          appBar: AppBar(
+            title: const Text('Sunmi Printer Plugin example app'),
+          ),
+          body: Center(
+            child: Column(
+              children: <Widget>[
+                RaisedButton(
+                  child: Text('Print Text'),
+                  onPressed: () {
+                    Sunmi.printText("Hello World", 30, false, false, 1);
+                    setState(() {
+                      printStatus = 'Printing';
+                    });
+                  },
+                ),
+                RaisedButton(
+                  child: Text('Print New Line'),
+                  onPressed: () {
+                    Sunmi.printText("", 30, false, false, 1);
+                  },
+                ),
+                RaisedButton(
+                  child: Text('Print QR Code'),
+                  onPressed: () {
+                    Sunmi.printQRCode("www.google.com", 16, 0, 1);
+                    setState(() {
+                      printStatus = 'Printing';
+                    });
+                  },
+                ),
+                RaisedButton(
+                  child: Text('Print Image'),
+                  onPressed: () {
+                    Sunmi.printImage(imagePath, 1);
+                    setState(() {
+                      printStatus = 'Printing';
+                    });
+                  },
+                ),
+              ],
+            ),
+          )),
     );
   }
 }
