@@ -273,7 +273,7 @@ public class AidlUtil {
 
             woyouService.printTextWithFont(content, null, size, null);
             woyouService.setAlignment(alignment, null);
-            woyouService.lineWrap(3, null);
+            woyouService.lineWrap(1, null);
             woyouService.exitPrinterBufferWithCallback(true, iCallback);
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -300,7 +300,7 @@ public class AidlUtil {
                     woyouService.enterPrinterBuffer(true);
                     woyouService.setAlignment(alignment, null);
                     woyouService.printBitmap(bmp, null);
-                    woyouService.lineWrap(3, null);
+                    woyouService.lineWrap(1, null);
                     woyouService.exitPrinterBufferWithCallback(true, iCallback);
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -335,7 +335,7 @@ public class AidlUtil {
                 woyouService.printBitmap(bitmap, null);
                 woyouService.printText("\n纵向排列\n", null);
             }
-            woyouService.lineWrap(3, null);
+            woyouService.lineWrap(1, null);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
