@@ -209,17 +209,17 @@ public class AidlUtil {
      * @param errorlevel error correction level(0-3)
      * @param alignment
      */
-    public void printQr(String data, int modulesize, int errorlevel, int alignment) {
+    public void printQr(String data, int modulesize, int errorlevel, int alignment, ICallback iCallback) {
         if (woyouService == null) {
 //            Toast.makeText(context, R.string.toast_2, Toast.LENGTH_LONG).show();
             return;
         }
-
-
         try {
+            woyouService.enterPrinterBuffer(true);
             woyouService.setAlignment(alignment, null);
-            woyouService.printQRCode(data, modulesize, errorlevel, null);
+            woyouService.printQRCode(data, modulesize, errorlevel,iCallback);
             woyouService.lineWrap(3, null);
+            woyouService.exitPrinterBufferWithCallback(true, iCallback);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -252,12 +252,13 @@ public class AidlUtil {
      * @param isUnderLine
      * @param alignment
      */
-    public void printText(String content, int size, boolean isBold, boolean isUnderLine, int alignment) {
+    public void printText(String content, int size, boolean isBold, boolean isUnderLine, int alignment, ICallback iCallback) {
         if (woyouService == null) {
 //            Toast.makeText(context, R.string.toast_2, Toast.LENGTH_LONG).show();
         }
 
         try {
+            woyouService.enterPrinterBuffer(true);
             if (isBold) {
                 woyouService.sendRAWData(ESCUtil.boldOn(), null);
             } else {
@@ -273,6 +274,7 @@ public class AidlUtil {
             woyouService.printTextWithFont(content, null, size, null);
             woyouService.setAlignment(alignment, null);
             woyouService.lineWrap(3, null);
+            woyouService.exitPrinterBufferWithCallback(true, iCallback);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -284,7 +286,8 @@ public class AidlUtil {
      * @param imagePath
      * @param alignment
      */
-    public void printBitmap(String imagePath, int alignment) {
+    public void printBitmap(String imagePath, int alignment, ICallback iCallback) {
+
         if (woyouService == null) {
 //            Toast.makeText(context, R.string.toast_2,Toast.LENGTH_LONG).show();
             return;
@@ -294,9 +297,11 @@ public class AidlUtil {
             Bitmap bmp = BitmapFactory.decodeFile(imagePath);
             if (bmp != null) {
                 try {
+                    woyouService.enterPrinterBuffer(true);
                     woyouService.setAlignment(alignment, null);
                     woyouService.printBitmap(bmp, null);
                     woyouService.lineWrap(3, null);
+                    woyouService.exitPrinterBufferWithCallback(true, iCallback);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }

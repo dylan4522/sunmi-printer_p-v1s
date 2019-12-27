@@ -6,8 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:sunmi/sunmi.dart';
 import 'package:path_provider/path_provider.dart';
 
-//void main()=>runApp(MyApp());
-
 void main() {
   runApp(MyApp());
 }
@@ -18,8 +16,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String printStatus = '';
-
   @override
   void initState() {
     super.initState();
@@ -50,9 +46,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      printStatus = Sunmi.printStatus;
-    });
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
@@ -60,14 +53,13 @@ class _MyAppState extends State<MyApp> {
           ),
           body: Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 RaisedButton(
                   child: Text('Print Text'),
-                  onPressed: () {
-                    Sunmi.printText("Hello World", 30, false, false, 1);
-                    setState(() {
-                      printStatus = 'Printing';
-                    });
+                  onPressed: () async {
+                    print(await Sunmi.printText("Hello World", 30, false, false, 1));
                   },
                 ),
                 RaisedButton(
@@ -78,20 +70,15 @@ class _MyAppState extends State<MyApp> {
                 ),
                 RaisedButton(
                   child: Text('Print QR Code'),
-                  onPressed: () {
-                    Sunmi.printQRCode("www.google.com", 16, 0, 1);
-                    setState(() {
-                      printStatus = 'Printing';
-                    });
+                  onPressed: () async{
+                    print(await Sunmi.printQRCode("www.google.com", 16, 0, 1));
                   },
                 ),
                 RaisedButton(
                   child: Text('Print Image'),
-                  onPressed: () {
-                    Sunmi.printImage(imagePath, 1);
-                    setState(() {
-                      printStatus = 'Printing';
-                    });
+                  onPressed: () async{
+                    print("Clicked Print Image");
+                    print(await Sunmi.printImage(imagePath, 1));
                   },
                 ),
               ],
